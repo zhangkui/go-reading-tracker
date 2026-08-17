@@ -12,7 +12,7 @@ func (s *Service) UpdateProgress(id int64, currentPage int) (Book, error) {
 	}
 	book.CurrentPage = currentPage
 	book.UpdatedAt = s.now().UTC()
-	if currentPage > book.TotalPages {
+	if currentPage == book.TotalPages {
 		book.Status = StatusCompleted
 		completedAt := book.UpdatedAt
 		book.CompletedAt = &completedAt
