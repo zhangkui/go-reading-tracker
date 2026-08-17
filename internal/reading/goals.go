@@ -33,7 +33,7 @@ func (s *Service) GetGoalProgress(month string, goalType GoalType) (GoalProgress
 	for _, book := range s.books {
 		switch goalType {
 		case GoalBooks:
-			if book.CompletedAt != nil && book.CompletedAt.Month() == requestedMonth.Month() {
+			if book.CompletedAt != nil && book.CompletedAt.Year() == requestedMonth.Year() && book.CompletedAt.Month() == requestedMonth.Month() {
 				current++
 			}
 		case GoalPages:
