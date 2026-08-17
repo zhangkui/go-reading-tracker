@@ -11,11 +11,11 @@ func matchesTags(bookTags, requested []string) bool {
 		available[strings.ToLower(strings.TrimSpace(tag))] = struct{}{}
 	}
 	for _, tag := range requested {
-		if _, exists := available[strings.ToLower(strings.TrimSpace(tag))]; exists {
-			return true
+		if _, exists := available[strings.ToLower(strings.TrimSpace(tag))]; !exists {
+			return false
 		}
 	}
-	return false
+	return true
 }
 
 func (s *Service) SearchBooks(options SearchOptions) SearchResult {
