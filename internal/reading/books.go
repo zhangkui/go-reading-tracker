@@ -42,9 +42,10 @@ func (s *Service) AddBook(input CreateBookInput) (Book, error) {
 	if err := validateBookInput(input.Title, input.Author, input.ISBN, input.TotalPages, input.CurrentPage); err != nil {
 		return Book{}, err
 	}
+	isbn := normalizeISBN(input.ISBN)
 	s.mu.Lock()
 	defer s.mu.Unlock()
-	if _, exists := s.byISBN[input.ISBN]; exists {
+	if _, exists := s.byISBN[isbn]; exists {
 		return Book{}, ErrDuplicateISBN
 	}
 	now := s.now().UTC()
@@ -55,7 +56,7 @@ func (s *Service) AddBook(input CreateBookInput) (Book, error) {
 	if input.CurrentPage > 0 && status == StatusPlanned {
 		status = StatusReading
 	}
-	book := Book{ID: s.nextID, Title: strings.TrimSpace(input.Title), Author: strings.TrimSpace(input.Author), ISBN: normalizeISBN(input.ISBN), TotalPages: input.TotalPages, CurrentPage: input.CurrentPage, Status: status, Tags: normalizeTags(input.Tags), CreatedAt: now, UpdatedAt: now}
+	book := Book{ID: s.nextID, Title: strings.TrimSpace(input.Title), Author: strings.TrimSpace(input.Author), ISBN: isbn, TotalPages: input.TotalPages, CurrentPage: input.CurrentPage, Status: status, Tags: normalizeTags(input.Tags), CreatedAt: now, UpdatedAt: now}
 	if status == StatusCompleted {
 		completedAt := now
 		book.CompletedAt = &completedAt
