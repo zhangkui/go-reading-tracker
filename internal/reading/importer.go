@@ -8,12 +8,12 @@ import (
 )
 
 func (s *Service) Import(ctx context.Context, reader io.Reader) (ImportResult, error) {
+	if err := ctx.Err(); err != nil {
+		return ImportResult{}, err
+	}
 	var records []ImportRecord
 	if err := json.NewDecoder(reader).Decode(&records); err != nil {
 		return ImportResult{}, fmt.Errorf("decode import records: %w", err)
-	}
-	if err := ctx.Err(); err != nil {
-		return ImportResult{}, err
 	}
 	result := ImportResult{}
 	for index, record := range records {
